@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true">
+
+    <!-- 左侧布局：景区名称和游览时间 -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <!-- 景区名称 -->
+        <TextView
+            android:id="@+id/textView_attraction_name"
+            android:text="Attraction Name"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <!-- 游览时间 -->
+        <TextView
+            android:id="@+id/textView_visit_time"
+            android:text="Visit Time"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <!-- 右侧：退票按钮 -->
+    <Button
+        android:id="@+id/button_refund"
+        android:text="退票"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="end"
+        android:padding="8dp" />
+
+    <!-- 右侧：已游览（在游览时间小于当前时间时显示）-->
+    <TextView
+        android:id="@+id/textView_visited"
+        android:text="已游览"
+        android:textColor="#888888"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="end"
+        android:textSize="14sp"
+        android:visibility="gone" />  <!-- 默认隐藏，只有在游览时间已过时显示 -->
+
+</LinearLayout>
+
+
+
