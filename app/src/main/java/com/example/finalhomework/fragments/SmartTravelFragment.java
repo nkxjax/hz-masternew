@@ -20,7 +20,7 @@ public class SmartTravelFragment extends Fragment {
     private TicketDBHelper ticketDBHelper;  // 数据库助手
 
     // 用户ID示例，实际应用中可以通过登录信息获取
-    private int userId = 1;
+    private int userId = 2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class SmartTravelFragment extends Fragment {
             ticketAdapter = new TicketAdapter(getContext(), ticketList);
             listView.setAdapter(ticketAdapter);
         } else {
-            Toast.makeText(getContext(), "没有找到相关票务记录", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "没有找到相关票务记录", Toast.LENGTH_SHORT).show();
         }
 
         return view;

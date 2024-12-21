@@ -1,13 +1,18 @@
 package com.example.finalhomework.util_classes;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.finalhomework.ActivityDetailActivity;
 import com.example.finalhomework.R;
 import com.example.finalhomework.AttractionDetailActivity;  // 引入详情页面
 
@@ -70,11 +75,20 @@ public class AttractionAdapter extends BaseAdapter {
 
         // 设置点击事件
         convertView.setOnClickListener(v -> {
-            // 创建 Intent 跳转到详情页面
-            Intent intent = new Intent(context, AttractionDetailActivity.class);
-            // 通过 Intent 传递景点的 ID 或名称，具体字段根据需要选择
-            intent.putExtra("attraction_id", attraction.getAttractionId());
-            context.startActivity(intent);
+            // 获取 SharedPreferences 实例
+            SharedPreferences sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE);
+            boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);  // 默认值为 false
+
+            if (!isLoggedIn) {
+                // 如果未登录，提示用户
+                Toast.makeText(context, "请先登录后再购票", Toast.LENGTH_SHORT).show();
+            } else {
+                // 创建 Intent 跳转到景点详情页面
+                Intent intent = new Intent(context, AttractionDetailActivity.class);
+                // 通过 Intent 传递景点的 ID
+                intent.putExtra("attraction_id", attraction.getAttractionId());
+                context.startActivity(intent);
+            }
         });
 
         return convertView;

@@ -77,7 +77,7 @@ public class AttractionDetailActivity extends AppCompatActivity {
                     // 计算总票价
                     double ticketPrice = attraction.getTicketPrice();
                     double totalPrice = ticketPrice * quantity;
-                    int userId = 1;
+                    int userId = 2;
 
                     Ticket ticket = new Ticket(userId, attractionId, quantity, totalPrice, System.currentTimeMillis(), 1, visitDate);
                     long result = dbHelper.addTicket(ticket);  // 使用addTicket方法插入数据，返回的是插入的ID

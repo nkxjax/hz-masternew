@@ -26,7 +26,7 @@ public class KnowJiuZhaiItemFragment_1_Geo extends Fragment {
 
         // Sample data for the ListView
         ArrayList<String> items = new ArrayList<>();
-        items.add("云栖竹径");
+        items.add("云栖竹径1");
         items.add("满陇桂雨");
         items.add("虎跑梦泉");
         items.add("龙井问茶");

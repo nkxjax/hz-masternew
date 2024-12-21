@@ -79,8 +79,7 @@ public class FunActivitiesActivity extends AppCompatActivity {
         // 获取悬浮按钮
         floatingActionButton = findViewById(R.id.floatingActionButton);
 
-        // 假设你有一个标识来判断当前用户是否是管理员
-        boolean isAdmin = checkIfAdmin();  // 这个方法需要你自己实现，判断当前用户是否是管理员
+        boolean isAdmin = checkIfAdmin();  // 判断当前用户是否是管理员
 
         if (isAdmin) {
             floatingActionButton.setVisibility(View.VISIBLE);  // 显示悬浮按钮
@@ -92,6 +91,9 @@ public class FunActivitiesActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+        } else {
+            // 非管理员时，隐藏按钮
+            floatingActionButton.setVisibility(View.GONE);
         }
     }
 

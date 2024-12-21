@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -48,14 +49,29 @@ public class OverAllActivity extends AppCompatActivity {
         // 获取用户信息，判断是否是管理员
         isAdmin = sharedPreferences.getBoolean("isAdmin", false);  // 默认非管理员
 
-        // 检查是否已获得权限
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // 权限未授予，请求权限
+        // 检查读取权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            Log.d("Permissions", "读取权限未授予，请求权限");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+            // 提示用户去设置页面手动授予权限
+//            Toast.makeText(this, "请在设置中授予存储权限", Toast.LENGTH_LONG).show();
+
+//            // 打开应用的设置页面
+//            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//            Uri uri = Uri.fromParts("package", getPackageName(), null);
+//            intent.setData(uri);
+//            startActivity(intent);
         } else {
-            // 权限已授予，继续执行操作
+            Log.d("Permissions", "读取权限已授予");
             loadSavedData();
+        }
+
+        // 检查写入权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("Permissions", "写入权限未授予，请求权限");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+        } else {
+            Log.d("Permissions", "写入权限已授予");
         }
 
         // 根据权限控制是否允许编辑
@@ -103,12 +119,21 @@ public class OverAllActivity extends AppCompatActivity {
 
     // 加载保存的数据
     private void loadSavedData() {
-        String savedImageUri = sharedPreferences.getString("savedImage", null);
-        if (savedImageUri != null) {
-            Uri imageUri = Uri.parse(savedImageUri);
-            imageView.setImageURI(imageUri);  // 显示保存的图片
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            String savedImageUri = sharedPreferences.getString("savedImage", null);
+            if (savedImageUri != null) {
+                Uri imageUri = Uri.parse(savedImageUri);
+                Glide.with(this)
+                        .load(imageUri)
+                        .into(imageView);  // 使用 Glide 加载保存的图片
+            }
+        } else {
+            Toast.makeText(this, "没有权限访问图片", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     // 当管理员点击图片时，允许选择新的图片
     public void onImageClick(View view) {
@@ -131,7 +156,12 @@ public class OverAllActivity extends AppCompatActivity {
             if (data != null) {
                 Uri selectedImageUri = data.getData();
                 Log.d("OverAllActivity", "Selected image URI: " + selectedImageUri.toString());
-                if (selectedImageUri != null) {
+
+                // 检查是否有写入权限
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+                } else {
                     // 使用 Glide 加载图片
                     Glide.with(this)
                             .load(selectedImageUri)
@@ -141,12 +171,13 @@ public class OverAllActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("savedImage", selectedImageUri.toString());
                     editor.apply();
-                } else {
-                    Toast.makeText(this, "图片URI无效", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(this, "图片URI无效", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 
     // 处理权限请求结果
     @Override
@@ -159,7 +190,7 @@ public class OverAllActivity extends AppCompatActivity {
                 loadSavedData();
             } else {
                 // 权限被拒绝，弹出提示
-                Toast.makeText(this, "权限被拒绝，无法继续操作", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "权限被拒绝，无法继续操作", Toast.LENGTH_SHORT).show();
             }
         }
     }
