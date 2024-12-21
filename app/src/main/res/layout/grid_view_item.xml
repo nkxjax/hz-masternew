@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- 图片 -->
+    <ImageView
+        android:id="@+id/imageView_grid_item"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"/>
+
+    <!-- 标题 -->
+    <TextView
+        android:id="@+id/textView_grid_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="活动标题"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- 日期 -->
+    <TextView
+        android:id="@+id/textView_grid_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="活动日期"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"/>
+
+<!--    &lt;!&ndash; 内容 (新增部分) &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/textView_grid_content"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="活动内容"-->
+<!--        android:textSize="14sp"-->
+<!--        android:layout_marginTop="4dp"/>-->
+
+</LinearLayout>
