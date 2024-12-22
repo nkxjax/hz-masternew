@@ -17,10 +17,14 @@ import android.widget.SimpleAdapter;
 import com.example.finalhomework.AttractionListActivity;
 import com.example.finalhomework.FunActivitiesActivity;
 import com.example.finalhomework.KnowJiuZhaiActivity;
+import com.example.finalhomework.LoginActivity;
+import com.example.finalhomework.NewsActivity;
 import com.example.finalhomework.OverAllActivity;
 import com.example.finalhomework.R;
 import com.example.finalhomework.TicketActivity;
 import com.example.finalhomework.util_classes.MyPagerAdapter;
+import com.example.finalhomework.util_classes.News;
+import com.example.finalhomework.util_classes.NewsDBHelper;
 import com.example.finalhomework.util_classes.ZoomOutPageTransformer;
 
 import java.util.ArrayList;
@@ -37,6 +41,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private String[] bcDateList;
     private ViewPager viewPager_shuffling;
     private MyPagerAdapter shufflingAdapter;
+    private NewsDBHelper newsDBHelper;
 
     //声明图片资源
     int[] shufflingImgIds = new int[]{R.drawable.shuffling_pic1, R.drawable.shuffling_pic2, R.drawable.shuffling_pic3};
@@ -45,6 +50,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        newsDBHelper = new NewsDBHelper(getContext());
+
+        // 获取新闻数据并设置适配器
         View view = initViews(inflater,container,savedInstanceState);
         return view;
     }
@@ -63,51 +71,64 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.imageButton_ticketbook).setOnClickListener(this::onClick);
 
         //设置轮播图viewPager_shuffling
-        for(int i = 0; i < shufflingImgIds.length; i++){
-            shufflingAdapter.addFragment(new ShufflingPicsFragment(shufflingImgIds[i]));
+        for (int i = 0; i < shufflingImgIds.length; i++) {
+            shufflingAdapter.addFragment(ShufflingPicsFragment.newInstance(shufflingImgIds[i]));
         }
+
         viewPager_shuffling.setPageTransformer(true,new ZoomOutPageTransformer());
         viewPager_shuffling.setAdapter(shufflingAdapter);
 
         //设置公告ListView
         //创建键值对列表
-        List<Map<String,Object>> bcListItems = new ArrayList<Map<String,Object>>();
-        //添加数据到列表
-        for (int i = 0; i < broadcasts.length; i++){
-            //建立单个键值对变量
-            Map<String,Object> listItem = new HashMap<String,Object>();
-            listItem.put("bcContent",broadcasts[i]);
-            listItem.put("bcDate",bcDateList[i]);
+        // 假设你有一个新闻列表，每个新闻对象包含 title 和 date
+        List<News> newsList = newsDBHelper.getAllNews();
 
-            bcListItems.add(listItem);//添加至列表
+        List<Map<String, Object>> newsListItems = new ArrayList<Map<String, Object>>();
+
+// 添加数据到列表
+        for (int i = 0; i < newsList.size(); i++) {
+            // 创建一个单个键值对变量
+            Map<String, Object> listItem = new HashMap<String, Object>();
+            listItem.put("newsTitle", newsList.get(i).getTitle());  // 使用新闻的标题
+            listItem.put("newsDate", newsList.get(i).getPublishTime());    // 使用新闻的日期
+
+            newsListItems.add(listItem);  // 添加至列表
         }
-        //创建SimpleAdapter 并把数据和View绑定.
-        SimpleAdapter bcAdapter = new SimpleAdapter(getContext(),bcListItems,R.layout.broadcast_item,new String[]{"bcContent","bcDate"},new int[]{R.id.textView_bc_content,R.id.textView_bc_date});
-        broadcastListView.setAdapter(bcAdapter);//设置Adapter
+
+        SimpleAdapter newsAdapter = new SimpleAdapter(getContext(), newsListItems, R.layout.broadcast_item,
+                new String[]{"newsTitle", "newsDate"},
+                new int[]{R.id.textView_bc_content, R.id.textView_bc_date});
+
+        broadcastListView.setAdapter(newsAdapter);
+
 
         broadcastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String url;
-                Intent intent;
-                switch (position){
-                    case 0:
-                        url = "https://www.djy517.com/news-details.html?channelCode=lyzx&id=35588";
-                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(intent);
+                // 获取 Activity 的引用
+                Intent intent = new Intent(getActivity(), NewsActivity.class);
+
+                // 使用不同的新闻 ID，根据 position 来选择不同的新闻 ID
+                switch (position) {
+                    case 0:  // 第一个点击项，显示 ID 为 1 的新闻
+                        intent.putExtra("newsId", 1);
                         break;
-                    case 1:
-                        url = "https://www.djy517.com/news-details.html?channelCode=lyzx&id=35541";
-                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(intent);
+                    case 1:  // 第二个点击项，显示 ID 为 2 的新闻
+                        intent.putExtra("newsId", 2);
                         break;
-                    case 2:
-                        url = "https://www.djy517.com/news-details.html?channelCode=lyzx&id=34036";
-                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(intent);
+                    case 2:  // 第三个点击项，显示 ID 为 3 的新闻
+                        intent.putExtra("newsId", 3);
+                        break;
+                    default:
+                        // 如果需要处理其他位置的点击
                         break;
                 }
+
+                // 启动 NewsActivity，并传递新闻 ID
+                startActivity(intent);
             }
+
+
+
         });
         return view;
     }
@@ -118,23 +139,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Intent intent = null;
         switch (v.getId()){
             case R.id.imageButton_overall:
-                //九寨沟概况
                 intent = new Intent(getContext(), OverAllActivity.class);
                 startActivity(intent);
                 break;
             case R.id.imageButton_knowjiuzhai:
-                //初识九寨沟
                 intent = new Intent(getContext(), KnowJiuZhaiActivity.class);
                 startActivity(intent);
                 break;
 
             case R.id.imageButton_avtivities:
-                //精彩活动
                 intent = new Intent(getContext(), FunActivitiesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.imageButton_ticketbook:
-                //预定门票
                 intent = new Intent(getContext(), AttractionListActivity.class);
                 startActivity(intent);
                 break;

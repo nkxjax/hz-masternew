@@ -20,6 +20,7 @@
 
 
         <!-- 各个 Activity 的定义 -->
+        <activity android:name=".NewsActivity" />
         <activity android:name=".TicketHistoryActivity" />
         <activity
             android:name=".AttractionDetailActivity"
