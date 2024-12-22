@@ -2,6 +2,7 @@ package com.example.finalhomework;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +17,9 @@ import com.example.finalhomework.util_classes.AttractionDBHelper;
 import com.example.finalhomework.util_classes.Ticket;
 import com.example.finalhomework.util_classes.TicketDBHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AttractionDetailActivity extends AppCompatActivity {
     private TextView nameTextView, locationTextView, descriptionTextView, ticketPriceTextView;
@@ -66,7 +69,10 @@ public class AttractionDetailActivity extends AppCompatActivity {
             // 获取用户输入的购买数量
             String quantityText = quantityEditText.getText().toString();
             String visitDate = textViewSelectDate.getText().toString(); // 获取选择的参观日期
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+            Date currentDate = new Date();
+            String statusChangeTime = sdf.format(currentDate);
             if (quantityText.isEmpty()) {
                 Toast.makeText(this, "请输入购买数量", Toast.LENGTH_SHORT).show();
             } else {
@@ -77,9 +83,10 @@ public class AttractionDetailActivity extends AppCompatActivity {
                     // 计算总票价
                     double ticketPrice = attraction.getTicketPrice();
                     double totalPrice = ticketPrice * quantity;
-                    int userId = 2;
+                    SharedPreferences sharedPreferences = getSharedPreferences("user_info", MODE_PRIVATE);
+                    int userId = sharedPreferences.getInt("userId", -1);  // 默认值为 -1，如果没有找到 userId
 
-                    Ticket ticket = new Ticket(userId, attractionId, quantity, totalPrice, System.currentTimeMillis(), 1, visitDate);
+                    Ticket ticket = new Ticket(userId, attractionId, quantity, totalPrice, System.currentTimeMillis(), 1, visitDate, statusChangeTime);
                     long result = dbHelper.addTicket(ticket);  // 使用addTicket方法插入数据，返回的是插入的ID
 
                     if(result != -1) Toast.makeText(this, "购买成功", Toast.LENGTH_SHORT).show();

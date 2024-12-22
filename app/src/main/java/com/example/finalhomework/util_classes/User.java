@@ -5,6 +5,7 @@ public class User {
     private String passwordString; // 用户密码
     private String nickNameString; // 用户昵称
     private int isAdmin;
+    private int id;
 
     // 构造方法
     public User() {
@@ -45,6 +46,11 @@ public class User {
     public void setIsAdmin(int isAdmin) {
         this.isAdmin = isAdmin;
     }
+
+
+    public int getUserId() { return id; }
+
+    public void setUserId(int id) { this.id = id; }
 
     // 重写 toString 方法便于打印对象信息
     @Override
