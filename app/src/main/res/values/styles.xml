@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 自定义主题 -->
+    <style name="Theme.FinalHomework" parent="Theme.AppCompat.Light">
+        <!-- 定义颜色 -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- 你可以继续添加更多的样式项 -->
+    </style>
+</resources>
