@@ -137,7 +137,7 @@ public class UserDBHelper extends SQLiteOpenHelper {
                 user.setPasswordString(cursor.getString(cursor.getColumnIndex("password")));
                 user.setNickNameString(cursor.getString(cursor.getColumnIndex("nickname")));
                 user.setIsAdmin(cursor.getInt(cursor.getColumnIndex("is_admin")));  // 获取 is_admin
-
+                user.setUserId(cursor.getInt(cursor.getColumnIndex("user_id")));
                 // 密码验证，如果不匹配，返回 null
                 if (!user.getPasswordString().equals(passwordInput)) {
                     user = null;  // 密码错误，返回 null

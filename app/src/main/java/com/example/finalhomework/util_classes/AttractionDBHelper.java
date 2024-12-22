@@ -32,16 +32,32 @@ public class AttractionDBHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
+        SQLiteDatabase db = super.getWritableDatabase();
+        if (db == null) {
+            Log.e("AttractionDBHelper", "Failed to get writable database");
+        }
+        return db;
+    }
+
+
     public static AttractionDBHelper getInstance(Context context) {
         if (mHelper == null) {
-            mHelper = new AttractionDBHelper(context);
+            if (context == null) {
+                Log.e("AttractionDBHelper", "Context is null when getting instance");
+            } else {
+                mHelper = new AttractionDBHelper(context);
+                Log.d("AttractionDBHelper", "AttractionDBHelper instance created with context: " + context);
+            }
         }
         return mHelper;
     }
 
+
     public SQLiteDatabase openReadLink() {
         if (mRDB == null || !mRDB.isOpen()) {
-            mRDB = mHelper.getWritableDatabase();
+            mRDB = mHelper.getReadableDatabase();
         }
         return mRDB;
     }

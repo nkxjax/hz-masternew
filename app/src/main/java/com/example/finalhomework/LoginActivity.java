@@ -54,20 +54,20 @@ public class LoginActivity extends AppCompatActivity {
                         // 登录成功后存储登录状态
                         SharedPreferences sharedPreferences = getSharedPreferences("user_info", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("isLoggedIn", true);  // 标记为已登录
+                        editor.putBoolean("isLoggedIn", true);  // 设置为已登录
                         editor.putString("username", userLogin.getNickNameString());  // 存储用户名
-                        editor.putBoolean("isAdmin", userLogin.isAdmin());
+                        editor.putString("userAccount", userLogin.getAccountString());  // 存储账号
+                        editor.putBoolean("isAdmin", userLogin.isAdmin());  // 存储是否为管理员
+                        editor.putInt("userId", userLogin.getUserId());  // 存储 user_id
                         editor.apply();  // 保存
 
                         finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "登录失败，用户名或密码错误", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
         });
-
     }
 
     @Override

@@ -9,13 +9,16 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TicketDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ticketMess.db";  // 数据库名称
-    private static final int DATABASE_VERSION = 1;            // 数据库版本
-    private static final String TABLE_TICKETS = "tickets";     // 表名
+    private static final int DATABASE_VERSION = 2;            // 数据库版本
+    private static final String TABLE_TICKETS = "ticket";     // 表名
 
     private SQLiteDatabase mRDB = null;  // 读数据库
     private SQLiteDatabase mWDB = null;  // 写数据库
@@ -31,6 +34,7 @@ public class TicketDBHelper extends SQLiteOpenHelper {
                     "purchase_time LONG NOT NULL, " +
                     "status INTEGER NOT NULL DEFAULT 0, " + // 默认状态为0（未退票）
                     "visit_date TEXT NOT NULL, " + // 新增字段：参观日期
+                    "status_change_time TEXT NOT NULL, " + // 状态变更时间
                     "FOREIGN KEY (user_id) REFERENCES users(id), " +
                     "FOREIGN KEY (attraction_id) REFERENCES attractions(attraction_id)" +
                     ");";
@@ -88,27 +92,20 @@ public class TicketDBHelper extends SQLiteOpenHelper {
     // 创建表格
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TICKETS);  // 执行创建票务表的SQL语句
+        db.execSQL(CREATE_TICKETS);  // 使用CREATE_TICKETS来创建表格
     }
 
-    // 数据库升级时调用
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // 备份旧表数据（如果需要的话）
-        db.execSQL("CREATE TEMPORARY TABLE tickets_backup AS SELECT * FROM " + TABLE_TICKETS);
-
-        // 删除原有表
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TICKETS);
-
-        // 重新创建表
-        onCreate(db);
-
-        // 可选：从备份表恢复数据
-        db.execSQL("INSERT INTO " + TABLE_TICKETS + " SELECT * FROM tickets_backup");
-
-        // 删除备份表
-        db.execSQL("DROP TABLE IF EXISTS tickets_backup");
+        if (oldVersion < 2) {
+            // 添加user_id列
+            db.execSQL("ALTER TABLE ticket ADD COLUMN user_id INTEGER NOT NULL");
+            db.execSQL("ALTER TABLE ticket ADD COLUMN visit_date TEXT NOT NULL");
+            db.execSQL("ALTER TABLE ticket ADD COLUMN status_change_time TEXT NOT NULL");
+            db.execSQL("ALTER TABLE ticket ADD COLUMN total_price DECIMAL NOT NULL");
+        }
     }
+
 
 
     // 插入一条票务记录
@@ -126,6 +123,7 @@ public class TicketDBHelper extends SQLiteOpenHelper {
         values.put("purchase_time", ticket.getPurchaseTime());
         values.put("status", ticket.getStatus());  // 设置状态字段
         values.put("visit_date", ticket.getVisitDate());
+        values.put("status_change_time", ticket.getStatusChangeTime());
 
         Log.d("TicketPurchase", "ticketMess: " + values);
         // 插入数据并返回新插入记录的ID
@@ -157,6 +155,7 @@ public class TicketDBHelper extends SQLiteOpenHelper {
             int purchaseTimeIndex = cursor.getColumnIndex("purchase_time");
             int statusIndex = cursor.getColumnIndex("status");
             int visitDateIndex = cursor.getColumnIndex("visit_date");
+            int statusChangeTimeIndex = cursor.getColumnIndex("status_change_time");
 
             // 检查每个列索引是否有效
             if (idIndex != -1 && userIdIndex != -1 && attractionIdIndex != -1 &&
@@ -172,8 +171,19 @@ public class TicketDBHelper extends SQLiteOpenHelper {
                     ticket.setPurchaseTime(cursor.getLong(purchaseTimeIndex));
                     ticket.setStatus(cursor.getInt(statusIndex));  // 读取状态
                     ticket.setVisitDate(cursor.getString(visitDateIndex));
+                    ticket.setStatusChangeTime(cursor.getString(statusChangeTimeIndex));
 
                     tickets.add(ticket);
+
+                    Log.d("TicketDBHelper", "Ticket ID: " + ticket.getId() +
+                            ", User ID: " + ticket.getUserId() +
+                            ", Attraction ID: " + ticket.getAttractionId() +
+                            ", Quantity: " + ticket.getQuantity() +
+                            ", Total Price: " + ticket.getTotalPrice() +
+                            ", Purchase Time: " + ticket.getPurchaseTime() +
+                            ", Status: " + ticket.getStatus() +
+                            ", Visit Date: " + ticket.getVisitDate());
+
                 }
             } else {
                 Log.e("TicketDBHelper", "One or more columns are missing in the query result." + idIndex + userIdIndex + attractionIdIndex +
@@ -206,7 +216,7 @@ public class TicketDBHelper extends SQLiteOpenHelper {
                 int purchaseTimeIndex = cursor.getColumnIndexOrThrow("purchase_time");
                 int statusIndex = cursor.getColumnIndexOrThrow("status");
                 int visitDateIndex = cursor.getColumnIndexOrThrow("visitDate");
-
+                int statusChangeTime = cursor.getColumnIndexOrThrow("statusChangeTime");
                 ticket = new Ticket(
                         cursor.getInt(idIndex),
                         cursor.getInt(userIdIndex),
@@ -214,7 +224,8 @@ public class TicketDBHelper extends SQLiteOpenHelper {
                         cursor.getInt(quantityIndex),
                         cursor.getLong(purchaseTimeIndex),
                         cursor.getInt(statusIndex),
-                        cursor.getString(visitDateIndex)
+                        cursor.getString(visitDateIndex),
+                        cursor.getString(statusChangeTime)
                 );
             }
             cursor.close();
@@ -222,11 +233,35 @@ public class TicketDBHelper extends SQLiteOpenHelper {
         return ticket;
     }
 
-    public int updateTicketStatus(int ticketId, int newStatus) {
+    public int updateTicketStatus(int ticketId, int newStatus) throws ParseException {
+        // 确保写数据库连接有效
+        if (mWDB == null || !mWDB.isOpen()) {
+            mWDB = openWriteLink();  // 确保数据库已初始化并打开
+        }
+
+        if (mWDB == null || !mWDB.isOpen()) {
+            Log.e("TicketDBHelper", "Failed to obtain writable database.");
+            return 0;  // 返回0表示没有更新
+        }
+
         ContentValues values = new ContentValues();
         values.put("status", newStatus);  // 设置新的状态
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  // 时间格式 "yyyy-MM-dd HH:mm:ss"
+        String currentTimeStr = sdf.format(new Date());  // 获取当前时间的字符串格式
+        values.put("status_change_time", currentTimeStr);
 
-        return mWDB.update(TABLE_TICKETS, values, "id = ?", new String[]{String.valueOf(ticketId)});
+        // 执行更新操作
+        int rowsAffected = mWDB.update(TABLE_TICKETS, values, "id = ?", new String[]{String.valueOf(ticketId)});
+
+        // 如果没有记录被更新，输出日志进行调试
+        if (rowsAffected == 0) {
+            Log.w("TicketDBHelper", "No record updated for ticketId: " + ticketId);
+        } else {
+            Log.d("TicketDBHelper", "Updated ticketId: " + ticketId + " with new status: " + newStatus);
+        }
+
+        // 返回更新的行数
+        return rowsAffected;
     }
 
 

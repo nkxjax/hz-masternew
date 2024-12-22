@@ -9,8 +9,9 @@ public class Ticket {     // 票ID
     private long purchaseTime;     // 购买时间（时间戳）
     private int status;
     private String visitDate;
+    private String statusChangeTime; // 状态变更时间
 
-    public Ticket(int userId, int attractionId, int quantity, double totalPrice, long purchaseTime, int status, String visitDate) {
+    public Ticket(int userId, int attractionId, int quantity, double totalPrice, long purchaseTime, int status, String visitDate, String statusChangeTime) {
         this.userId = userId;
         this.attractionId = attractionId;
         this.quantity = quantity;
@@ -18,6 +19,7 @@ public class Ticket {     // 票ID
         this.purchaseTime = purchaseTime;
         this.status = status;
         this.visitDate = visitDate;
+        this.statusChangeTime = statusChangeTime;
     }
 
     public Ticket() {
@@ -77,5 +79,23 @@ public class Ticket {     // 票ID
 
     public void setVisitDate(String visitDate) {
         this.visitDate = visitDate;
+    }
+
+    public String getStatusChangeTime() { return statusChangeTime; }
+
+    public void setStatusChangeTime(String statusChangeTime) {this.statusChangeTime = statusChangeTime;}
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", attractionId=" + attractionId +
+                ", quantity=" + quantity +
+                ", totalPrice=" + totalPrice +
+                ", purchaseTime=" + purchaseTime +
+                ", status=" + status +
+                ", visitDate='" + visitDate + '\'' +
+                '}';
     }
 }

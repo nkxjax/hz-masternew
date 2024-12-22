@@ -71,7 +71,7 @@ public class TicketAdapter extends BaseAdapter {
 
         TextView purchaseTimeTextView = convertView.findViewById(R.id.purchaseTime);
         Date date = new Date(ticket.getPurchaseTime());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("购票时间：" + "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("购票时间：" + "yyyy-MM-dd", Locale.getDefault());
         purchaseTimeTextView.setText(dateFormat.format(date));
 
         return convertView;
