@@ -5,6 +5,7 @@ import static java.security.AccessController.getContext;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,6 @@ public class SmartTravelFragment extends Fragment {
         // 获取当前用户的所有票务记录
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_info", Context.MODE_PRIVATE);
         userId = sharedPreferences.getInt("userId", -1);  // 默认值为 -1，如果没有找到 userId
-
         List<Ticket> ticketList = ticketDBHelper.getTicketsByUserId(userId);
 
         if (ticketList != null && !ticketList.isEmpty()) {

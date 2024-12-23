@@ -111,6 +111,14 @@ public class AttractionDetailActivity extends AppCompatActivity {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
+        // 获取当前日期
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+
+        // 设置最小日期为当前日期
+        long currentTimeInMillis = calendar.getTimeInMillis();
+
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 (view, year1, month1, dayOfMonth) -> {
                     // 格式化并显示选择的日期
@@ -118,9 +126,11 @@ public class AttractionDetailActivity extends AppCompatActivity {
                     textViewSelectDate.setText(selectedDate);
                 }, year, month, day);
 
+        // 设置最小日期为今天
+        datePickerDialog.getDatePicker().setMinDate(currentTimeInMillis);
+
+        // 显示日期选择对话框
         datePickerDialog.show();
     }
+
 }
-
-
-//买票数据存到ticket数据库

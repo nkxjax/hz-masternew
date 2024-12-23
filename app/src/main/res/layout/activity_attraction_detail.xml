@@ -75,7 +75,7 @@
         android:text="选择日期"
         android:padding="12dp"
         android:textSize="18sp"
-        android:textColor="#FFFFFF"
+        android:background="#6100EC"
         android:layout_marginTop="8dp" />
 
     <!-- 买票按钮 -->
@@ -86,7 +86,7 @@
         android:text="买票"
         android:padding="12dp"
         android:textSize="18sp"
-        android:textColor="#FFFFFF"
+        android:background="#6100EC"
         android:layout_marginTop="16dp" />
 
 </LinearLayout>
