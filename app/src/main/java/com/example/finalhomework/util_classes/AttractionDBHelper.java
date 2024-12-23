@@ -1,5 +1,6 @@
 package com.example.finalhomework.util_classes;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
 
 public class AttractionDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "attractions.db";
@@ -170,6 +173,55 @@ public class AttractionDBHelper extends SQLiteOpenHelper {
             }
         }
         return attraction;
+    }
+
+    public void deleteAttraction(int attractionId) {
+        SQLiteDatabase db = openWriteLink();  // 获取可写数据库
+        if (db != null && db.isOpen()) {
+            db.delete(TABLE_ATTRACTIONS, "attraction_id = ?", new String[]{String.valueOf(attractionId)});
+        }
+    }
+
+    public long addAttraction(Attraction attraction) {
+        SQLiteDatabase db = openWriteLink();
+        if (db == null || !db.isOpen()) {
+            return -1;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put("name", attraction.getName());
+        values.put("location", attraction.getLocation());
+        values.put("description", attraction.getDescription());
+        values.put("ticket_price", attraction.getTicketPrice());
+        values.put("open_time", attraction.getOpenTime());
+        values.put("close_time", attraction.getCloseTime());
+
+        long result = db.insert(TABLE_ATTRACTIONS, null, values);
+        if (result == -1) {
+            Log.e("AttractionDBHelper", "Failed to add attraction");
+        }
+        return result;
+    }
+
+    public ArrayList<Attraction> getAllAttractions() {
+        ArrayList<Attraction> attractions = new ArrayList<>();
+        SQLiteDatabase db = openReadLink();
+        Cursor cursor = db.query(TABLE_ATTRACTIONS, null, null, null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Attraction attraction = new Attraction();
+                attraction.setAttractionId(cursor.getInt(cursor.getColumnIndex("attraction_id")));
+                attraction.setName(cursor.getString(cursor.getColumnIndex("name")));
+                attraction.setLocation(cursor.getString(cursor.getColumnIndex("location")));
+                attraction.setDescription(cursor.getString(cursor.getColumnIndex("description")));
+                attraction.setTicketPrice(cursor.getDouble(cursor.getColumnIndex("ticket_price")));
+                attraction.setOpenTime(cursor.getString(cursor.getColumnIndex("open_time")));
+                attraction.setCloseTime(cursor.getString(cursor.getColumnIndex("close_time")));
+                attractions.add(attraction);
+            }
+            cursor.close();
+        }
+        return attractions;
     }
 
 }

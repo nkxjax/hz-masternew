@@ -4,6 +4,18 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- 第一行，包含景点名称 -->
+    <Button
+        android:id="@+id/btn_remove"
+        android:layout_width="22dp"
+        android:layout_height="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/round_button"
+        android:visibility="gone"
+        android:gravity="left"
+        android:textSize="20sp" /> <!-- 设置圆形红色边框背景 -->
+
     <TextView
         android:id="@+id/textView_attraction_name"
         android:layout_width="match_parent"
@@ -12,12 +24,22 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView_attraction_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Location"
-        android:textSize="16sp" />
+    <!-- 第二行，包含景点地点和减号按钮 -->
+    <LinearLayout
+        android:layout_width="372dp"
+        android:layout_height="31dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView_attraction_location"
+            android:layout_width="346dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Location"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView_attraction_description"
@@ -25,4 +47,7 @@
         android:layout_height="wrap_content"
         android:text="Description"
         android:textSize="14sp" />
+
+    <!-- 第三行，包含景点描述 -->
 </LinearLayout>
+
