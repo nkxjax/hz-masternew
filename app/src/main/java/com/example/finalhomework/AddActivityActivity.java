@@ -13,18 +13,17 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.finalhomework.model.Schedule;
 import com.example.finalhomework.util_classes.ActivityDBHelper;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class AddActivityActivity extends AppCompatActivity {
@@ -142,4 +141,5 @@ public class AddActivityActivity extends AppCompatActivity {
             Toast.makeText(AddActivityActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

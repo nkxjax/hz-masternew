@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".AddScheduleActivity">
+
+<!-- 包裹所有控件的 ScrollView -->
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 日程标题输入框 -->
+        <EditText
+            android:id="@+id/title_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="标题"
+            android:inputType="text"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 日程时长输入框 -->
+        <EditText
+            android:id="@+id/duration_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="时长"
+            android:inputType="text"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 日程内容输入框 -->
+        <EditText
+            android:id="@+id/content_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="内容"
+            android:inputType="textMultiLine"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="保存日程" />
+
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="删除日程"
+            android:layout_centerHorizontal="true"/>
+
+    </LinearLayout>
+</ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

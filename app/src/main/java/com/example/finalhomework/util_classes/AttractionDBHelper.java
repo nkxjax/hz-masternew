@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class AttractionDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "attractions.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TABLE_ATTRACTIONS = "attractions";
 
     private SQLiteDatabase mRDB = null;

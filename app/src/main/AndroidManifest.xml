@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"
-        tools:ignore="ScopedStorage" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.finalhomework">
 
-    <!-- 确保这里只有一个 <application> 标签 -->
+    <!-- 权限声明应该在 manifest 根元素下 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.SET_ALARM" tools:ignore="WrongManifestParent" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -16,10 +16,8 @@
         android:label="杭旅"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalHomework">
-<!--        android:name=".MyApplication"-->
 
-
-        <!-- 各个 Activity 的定义 -->
+        <!-- 其他 Activity 定义 -->
         <activity android:name=".NewsActivity" />
         <activity android:name=".TicketHistoryActivity" />
         <activity
@@ -43,16 +41,15 @@
             android:label="注册账号"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".AddAttractionActivity" />
-
         <activity
             android:name=".FunActivitiesActivity"
             android:exported="false"
             android:label="精彩活动"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".KnowJiuZhaiActivity"
+            android:name=".GuideHZ"
             android:exported="false"
-            android:label="初识杭州"
+            android:label="推荐日程"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".OverAllActivity"
@@ -66,7 +63,15 @@
         <activity android:name=".AddActivityActivity"
             android:exported="false"
             android:label="添加活动"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".FunActivitiesActivity" />
+        <activity android:name=".ScheduleDetailActivity"
+            android:exported="false"
+            android:label="日程详情"
+            android:parentActivityName=".GuideHZ" />
+        <activity android:name=".AddScheduleActivity"
+            android:exported="false"
+            android:label="添加日程"
+            android:parentActivityName=".GuideHZ" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

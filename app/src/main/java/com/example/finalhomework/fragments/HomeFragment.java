@@ -16,6 +16,7 @@ import android.widget.SimpleAdapter;
 
 import com.example.finalhomework.AttractionListActivity;
 import com.example.finalhomework.FunActivitiesActivity;
+import com.example.finalhomework.GuideHZ;
 import com.example.finalhomework.KnowJiuZhaiActivity;
 import com.example.finalhomework.LoginActivity;
 import com.example.finalhomework.NewsActivity;
@@ -143,7 +144,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.imageButton_knowjiuzhai:
-                intent = new Intent(getContext(), KnowJiuZhaiActivity.class);
+                intent = new Intent(getContext(), GuideHZ.class);
                 startActivity(intent);
                 break;
 

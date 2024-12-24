@@ -56,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/home_ImgBtn_height"
                     android:layout_marginBottom="10dp"
-                    android:src="@drawable/imgbtnpic_knowjiuzhai"
+                    android:src="@drawable/tuijianricheng"
                     android:padding="0dp"
                     android:scaleType="centerCrop"/>
                 <ImageButton
