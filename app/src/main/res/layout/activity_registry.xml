@@ -18,7 +18,9 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"
+            android:clickable="true"
+            android:focusable="true"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -26,7 +28,6 @@
             android:gravity="center"
             android:text="点击设置头像" />
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +51,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:text=""
-            android:hint="输入账号"/>
+            android:hint="输入昵称"/>
     </LinearLayout>
 
     <LinearLayout
@@ -90,7 +91,6 @@
             android:text="密码"
             android:textSize="20dp"/>
 
-
         <EditText
             android:layout_margin="10dp"
             android:id="@+id/editTextTextPassword_register"
@@ -100,7 +100,7 @@
             android:ems="10"
             android:textSize="20dp"
             android:hint="输入密码"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"/>
     </LinearLayout>
 
     <Button
