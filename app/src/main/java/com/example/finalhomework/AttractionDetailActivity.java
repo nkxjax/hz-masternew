@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.alipay.sdk.app.PayTask;
+
 public class AttractionDetailActivity extends AppCompatActivity {
     private TextView nameTextView, locationTextView, descriptionTextView, ticketPriceTextView;
     private EditText quantityEditText;
@@ -29,10 +31,14 @@ public class AttractionDetailActivity extends AppCompatActivity {
     private Button buttonSelectDate;
     private TextView textViewSelectDate;
 
+    private static final int ALIPAY_REQUEST_CODE = 10001; // Request code for Alipay
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attraction_detail);  // 设置布局
+        setContentView(R.layout.activity_attraction_detail);  // Set layout
+
+        // Initialize UI elements
         textViewSelectDate = findViewById(R.id.textView_select_date);
         nameTextView = findViewById(R.id.textView_attraction_name);
         locationTextView = findViewById(R.id.textView_attraction_location);
@@ -43,13 +49,9 @@ public class AttractionDetailActivity extends AppCompatActivity {
         buttonSelectDate = findViewById(R.id.button_select_date);
 
         dbHelper = TicketDBHelper.getInstance(this);
-        Log.d("TicketPurchase", "Database helper initialized: " + dbHelper);
 
-        // 获取传递的景点 ID
+        // Get the attraction ID passed from the previous activity
         int attractionId = getIntent().getIntExtra("attraction_id", -1);
-
-        // 根据景点 ID 查询并显示详细信息（此部分根据需要进一步实现）
-        // 例如，可以使用 AttractionDBHelper 查询数据库中的景点信息
         Attraction attraction = getAttractionById(attractionId);
 
         if (attraction != null) {
@@ -58,21 +60,19 @@ public class AttractionDetailActivity extends AppCompatActivity {
             descriptionTextView.setText(attraction.getDescription());
             ticketPriceTextView.setText("票价：￥" + attraction.getTicketPrice());
         }
-        buttonSelectDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog();
-            }
-        });
-        // 设置买票按钮的点击事件
-        buyTicketButton.setOnClickListener(v -> {
-            // 获取用户输入的购买数量
-            String quantityText = quantityEditText.getText().toString();
-            String visitDate = textViewSelectDate.getText().toString(); // 获取选择的参观日期
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+        // Date picker dialog
+        buttonSelectDate.setOnClickListener(v -> showDatePickerDialog());
+
+        // Buy ticket button action
+        buyTicketButton.setOnClickListener(v -> {
+            // Get user input for ticket quantity and selected date
+            String quantityText = quantityEditText.getText().toString();
+            String visitDate = textViewSelectDate.getText().toString();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date currentDate = new Date();
             String statusChangeTime = sdf.format(currentDate);
+
             if (quantityText.isEmpty()) {
                 Toast.makeText(this, "请输入购买数量", Toast.LENGTH_SHORT).show();
             } else {
@@ -80,57 +80,82 @@ public class AttractionDetailActivity extends AppCompatActivity {
                 if (quantity <= 0) {
                     Toast.makeText(this, "数量必须大于 0", Toast.LENGTH_SHORT).show();
                 } else {
-                    // 计算总票价
                     double ticketPrice = attraction.getTicketPrice();
                     double totalPrice = ticketPrice * quantity;
                     SharedPreferences sharedPreferences = getSharedPreferences("user_info", MODE_PRIVATE);
-                    int userId = sharedPreferences.getInt("userId", -1);  // 默认值为 -1，如果没有找到 userId
+                    int userId = sharedPreferences.getInt("userId", -1);
 
+                    // Create a new Ticket object
                     Ticket ticket = new Ticket(userId, attractionId, quantity, totalPrice, System.currentTimeMillis(), 1, visitDate, statusChangeTime);
-                    long result = dbHelper.addTicket(ticket);  // 使用addTicket方法插入数据，返回的是插入的ID
+                    long result = dbHelper.addTicket(ticket);  // Add the ticket to DB
 
-                    if(result != -1) Toast.makeText(this, "购买成功", Toast.LENGTH_SHORT).show();
-                    // 这里可以添加跳转到支付页面的代码
-                    // 例如：startActivity(new Intent(this, PaymentActivity.class));
+                    if (result != -1) {
+                        Toast.makeText(this, "购买成功", Toast.LENGTH_SHORT).show();
+                        // Proceed to Alipay payment
+                        initiateAlipayPayment(totalPrice);
+                    }
                 }
             }
         });
     }
 
-    // 根据景点 ID 获取景点信息的示例方法
+    // Method to fetch Attraction details by ID
     private Attraction getAttractionById(int id) {
-        // 这里调用数据库或其他方式查询景点信息
-        // 这是一个示例方法，实际代码可能需要查询数据库
         AttractionDBHelper dbHelper = AttractionDBHelper.getInstance(this);
         return dbHelper.getAttractionById(id);
     }
 
+    // Show the date picker dialog
     private void showDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
+        calendar.set(year, month, day);
 
-        // 获取当前日期
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-
-        // 设置最小日期为当前日期
         long currentTimeInMillis = calendar.getTimeInMillis();
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 (view, year1, month1, dayOfMonth) -> {
-                    // 格式化并显示选择的日期
                     String selectedDate = year1 + "-" + (month1 + 1) + "-" + dayOfMonth;
                     textViewSelectDate.setText(selectedDate);
                 }, year, month, day);
 
-        // 设置最小日期为今天
         datePickerDialog.getDatePicker().setMinDate(currentTimeInMillis);
-
-        // 显示日期选择对话框
         datePickerDialog.show();
     }
 
+    // Initiate Alipay payment
+    private void initiateAlipayPayment(double totalPrice) {
+        String orderInfo = generateOrderInfo(totalPrice);
+        String sign = signOrderInfo(orderInfo);
+
+        // Create the Alipay payment task
+        PayTask payTask = new PayTask(this);
+        String result = payTask.pay(orderInfo + "&sign=" + sign, true);  // Alipay SDK call to initiate payment
+
+        // Process the result (can be enhanced with background processing)
+        handleAlipayResult(result);
+    }
+
+    // Generate order info string for Alipay
+    private String generateOrderInfo(double totalPrice) {
+        // Example order info (add your own fields based on Alipay API)
+        return "app_id=YOUR_APP_ID&method=alipay.trade.app.pay&total_amount=" + totalPrice;
+    }
+
+    // Sign the order information
+    private String signOrderInfo(String orderInfo) {
+        // Sign the order info using your private key (implement this properly)
+        return "SIGNED_ORDER_INFO"; // Replace with actual signing process
+    }
+
+    // Handle Alipay result (success or failure)
+    private void handleAlipayResult(String result) {
+        if (result.contains("success")) {
+            Toast.makeText(this, "支付成功", Toast.LENGTH_SHORT).show();
+            // Optionally navigate to a payment success page
+        } else {
+            Toast.makeText(this, "支付失败", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
