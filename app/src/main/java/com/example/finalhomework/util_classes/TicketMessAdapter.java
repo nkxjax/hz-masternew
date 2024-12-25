@@ -66,8 +66,8 @@ public class TicketMessAdapter extends ArrayAdapter<Ticket> {
             purchaseTime.setText("退票时间: " + ticket.getStatusChangeTime());
             visitingTime.setText("参观时间: " + " - ");
         } else if (ticket.getStatus() == 1) {
-            messageTitle.setText("购票信息");  // 状态为 1，显示 购票信息
-            purchaseTime.setText("购买时间: " + ticket.getStatusChangeTime());
+            messageTitle.setText("预定信息");  // 状态为 1，显示 购票信息
+            purchaseTime.setText("预定时间: " + ticket.getStatusChangeTime());
             visitingTime.setText("参观时间: " + ticket.getVisitDate());
         }
 
@@ -88,5 +88,11 @@ public class TicketMessAdapter extends ArrayAdapter<Ticket> {
 
 
         return convertView;
+    }
+
+    public void updateTicketList(List<Ticket> newTicketList) {
+        this.ticketList.clear();  // 清空当前列表
+        this.ticketList.addAll(newTicketList);  // 添加新数据
+        notifyDataSetChanged();  // 通知适配器数据已更改
     }
 }

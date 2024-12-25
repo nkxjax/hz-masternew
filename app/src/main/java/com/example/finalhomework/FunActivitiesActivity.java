@@ -49,7 +49,7 @@ public class FunActivitiesActivity extends AppCompatActivity {
 
         // 注册广播接收器
         IntentFilter filter = new IntentFilter("com.example.finalhomework.REFRESH_ACTIVITY_LIST");
-        registerReceiver(refreshReceiver, filter);
+        registerReceiver(refreshReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
         // 初始化并加载活动数据
         refreshActivities();

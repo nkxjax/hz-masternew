@@ -10,7 +10,7 @@
         android:id="@+id/message_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="购票信息"
+        android:text="预定信息"
         android:textSize="20sp"
         android:textColor="#333333"
         android:gravity="center"

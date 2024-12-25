@@ -82,7 +82,7 @@ public class AttractionDetailActivity extends AppCompatActivity {
             String statusChangeTime = sdf.format(currentDate);
 
             if (quantityText.isEmpty()) {
-                Toast.makeText(this, "请输入购买数量", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "请输入预定数量", Toast.LENGTH_SHORT).show();
             } else {
                 int quantity = Integer.parseInt(quantityText);
                 if (quantity <= 0) {
@@ -98,7 +98,7 @@ public class AttractionDetailActivity extends AppCompatActivity {
                     long result = dbHelper.addTicket(ticket);  // Add the ticket to DB
 
                     if (result != -1) {
-                        Toast.makeText(this, "购买成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "预定成功", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

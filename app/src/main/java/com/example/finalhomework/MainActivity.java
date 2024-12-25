@@ -2,6 +2,7 @@ package com.example.finalhomework;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
@@ -55,6 +56,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onPageSelected(int position) {
                 bottomNavigationView.getMenu().getItem(position).setChecked(true);
+
+                Fragment currentFragment = myPagerAdapter.getItem(position);
+                if (currentFragment!= null) {
+                    if (currentFragment instanceof SmartTravelFragment) {
+                        // 手动触发SmartTravelFragment的onResume方法
+                        ((SmartTravelFragment) currentFragment).onResume();
+                    } else if (currentFragment instanceof HomeFragment) {
+//                        // 同理，若有需要也可对HomeFragment等做类似处理
+//                        ((HomeFragment) currentFragment).onResume();
+                    } else if (currentFragment instanceof MineFragment) {
+//                        ((MineFragment) currentFragment).onResume();
+                    }
+                }
             }
 
             @Override
@@ -66,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.navigation_home:
                         viewPager.setCurrentItem(0);
                         break;

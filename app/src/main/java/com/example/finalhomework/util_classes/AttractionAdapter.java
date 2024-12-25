@@ -115,7 +115,7 @@ public class AttractionAdapter extends BaseAdapter {
 
             if (!isLoggedIn) {
                 // 如果未登录，提示用户
-                Toast.makeText(context, "请先登录后再购票", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "请先登录后再预定", Toast.LENGTH_SHORT).show();
             } else {
                 // 创建 Intent 跳转到景点详情页面
                 Intent intent = new Intent(context, AttractionDetailActivity.class);

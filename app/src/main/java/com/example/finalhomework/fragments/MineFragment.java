@@ -39,7 +39,7 @@ public class MineFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine, container, false);
         textView_userName = view.findViewById(R.id.textView_mine_username);
         textView_userAccount = view.findViewById(R.id.textView_mine_userId);
@@ -116,9 +116,12 @@ public class MineFragment extends Fragment {
             editor.putString("username", "");  // 清空用户名
             editor.putString("userAccount", "");  // 清空用户账号
             editor.putBoolean("isAdmin", false); // 清空管理员标志
+            editor.putInt("userId", -1);
             editor.apply();  // 保存更改
 
             Toast.makeText(getContext(), "用户已登出", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent("com.example.finalhomework.LOGOUT_ACTION");
+            getActivity().sendBroadcast(intent);
         } else {
             Toast.makeText(getContext(), "请先登入", Toast.LENGTH_SHORT).show();
         }
@@ -146,4 +149,3 @@ public class MineFragment extends Fragment {
         }
     }
 }
-

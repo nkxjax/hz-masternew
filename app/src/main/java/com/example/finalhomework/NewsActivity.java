@@ -40,7 +40,7 @@ public class NewsActivity extends AppCompatActivity {
         // 获取传递的 newsId 和 userId
         int newsId = getIntent().getIntExtra("newsId", -1);
         SharedPreferences sharedPreferences = getSharedPreferences("user_info", MODE_PRIVATE);
-        int userId = sharedPreferences.getInt("isAdmin", -1);  // 默认值为 -1，如果没有找到 userId
+        int userId = sharedPreferences.getInt("userId", -1);  // 默认值为 -1，如果没有找到 userId
 
         Log.d("Button", "user_id" + userId);
         Log.d("Button", "news_id" + newsId);

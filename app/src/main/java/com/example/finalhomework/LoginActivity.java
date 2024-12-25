@@ -1,16 +1,21 @@
 package com.example.finalhomework;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.finalhomework.fragments.SmartTravelFragment;
 import com.example.finalhomework.util_classes.User;
 import com.example.finalhomework.util_classes.UserDBHelper;
 
@@ -69,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     protected void onStart() {
