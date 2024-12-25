@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.finalhomework">
 
-    <!-- 权限声明应该在 manifest 根元素下 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:ignore="SelectedPhotoAccess" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.SET_ALARM" tools:ignore="WrongManifestParent" />
-<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>-->
 
     <application
         android:requestLegacyExternalStorage="true"
@@ -23,6 +23,12 @@
         android:label="杭旅"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalHomework">
+
+<!--        <activity android:name=".apshare.ShareEntryActivity"-->
+<!--            android:exported="true"-->
+<!--            tools:ignore="MissingClass">-->
+<!--        </activity>-->
+
 
         <!-- 其他 Activity 定义 -->
         <activity android:name=".NewsActivity" />
